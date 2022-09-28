@@ -1,0 +1,19 @@
+kind: io.statefun.endpoints.v2/http
+spec:
+  functions: aws.lambda.example/*
+  urlPathTemplate: https://xxxxxx.execute-api.ap-east-1.amazonaws.com/default/greeter # edit here to your AWS Lambda endpoint!!
+  transport:
+    type: io.statefun.transports.v1/async
+---
+kind: io.statefun.kafka.v1/ingress
+spec:
+  id: greeter.io/greeter
+  address: kafka:9092
+  consumerGroupId: greeter
+  startupPosition:
+    type: earliest
+  topics:
+  - topic: query
+    valueType: greeter.types/query
+    targets:
+    - aws.lambda.example/greeter
